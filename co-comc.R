@@ -41,3 +41,9 @@ co.comc$In.d = co.comc$InCO.p - co.comc$InCOMC.p
 
 #graphs
 hist(co.comc$Caf.d)
+hist(co.comc$Haf.d)
+hist(co.comc$Nas.d)
+hist(co.comc$Other.d)
+hist(co.comc$Ab.d)
+hist(co.comc$Tr.d)
+hist(co.comc$In.d)
