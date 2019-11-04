@@ -48,3 +48,37 @@ hist(intrx.mc$In.d)
 hist(intrx.mc$Ab.d)
 hist(intrx.mc$Tr.d)
 
+
+
+#condense dependent variables
+y <- cbind(intrx.mc$Caf.d, intrx.mc$Haf.d, intrx.mc$Nas.d, intrx.mc$Other.d, intrx.mc$Ab.d, intrx.mc$Tr.d, intrx.mc$In.d)#combines dependent variables
+
+#run manova
+manova(y ~ Condition * Life, data=intrx.mc, na.action=na.omit)
+M1 <- manova(y ~ Condition * Life, data=intrx.mc, na.action=na.omit)
+summary(M1, tol=0)#tol=0 overrides error code, overall test summary
+summary.aov(M1)
+
+#interaction is not significant, so it can be removed
+manova(y ~ Condition + Life, data=intrx.mc, na.action=na.omit)
+M1 <- manova(y ~ Condition + Life, data=intrx.mc, na.action=na.omit)
+summary(M1, tol=0)#tol=0 overrides error code, overall test summary
+summary.aov(M1)
+
+#can remove life history since it is not significant
+manova(y ~ Condition, data=co.comc, na.action=na.omit)
+M1 <- manova(y ~ Condition, data=co.comc, na.action=na.omit)
+summary(M1, tol=0)#tol=0 overrides error code, overall test summary
+summary.aov(M1)
+
+#use graphics to analyze residuals
+plot(residuals(M1))
+qqnorm(residuals(M1))#this looks bad
+qqline(residuals(M1))
+hist(residuals(M1))#but this looks really good
+
+#response 6 = Travel is significant, paired t-test to analyze
+t.test(co.comc$Tr.d ~ co.comc$Condition,  alternative = c("two.sided"), paired=F)
+#chimpanzees travelled more in the carry over matched control after chimpanzee interaction
+
+

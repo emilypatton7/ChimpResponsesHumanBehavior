@@ -47,3 +47,44 @@ hist(intrx.co$Nas.d)
 hist(intrx.co$Other.d)
 hist(intrx.co$Tr.d)
 hist(intrx.co$Ab.d)
+
+
+
+#condense dependent variables
+y <- cbind(intrx.co$Caf.d, intrx.co$Haf.d, intrx.co$Nas.d, intrx.co$Other.d, intrx.co$Ab.d, intrx.co$Tr.d, intrx.co$In.d)#combines dependent variables
+
+#run manova
+manova(y ~ Condition * LIFE, data=intrx.co, na.action=na.omit)
+M1 <- manova(y ~ Condition * LIFE, data=intrx.co, na.action=na.omit)
+summary(M1, tol=0)#tol=0 overrides error code, overall test summary
+summary.aov(M1)
+
+#interaction is not significant, so it can be removed
+manova(y ~ Condition + LIFE, data=intrx.co, na.action=na.omit)
+M1 <- manova(y ~ Condition + LIFE, data=intrx.co, na.action=na.omit)
+summary(M1, tol=0)#tol=0 overrides error code, overall test summary
+summary.aov(M1)
+
+#can remove condition since it is not significant
+manova(y ~ LIFE, data=intrx.co, na.action=na.omit)
+M1 <- manova(y ~ LIFE, data=intrx.co, na.action=na.omit)
+summary(M1, tol=0)#tol=0 overrides error code, overall test summary
+summary.aov(M1)
+
+#use graphics to analyze residuals
+plot(residuals(M1))
+qqnorm(residuals(M1))#this looks bad
+qqline(residuals(M1))
+hist(residuals(M1))#but this looks really good
+
+#response 5 = Abnormal is significant, anova to analyze
+AOV1 = aov(intrx.co$Ab.d ~ intrx.co$LIFE)
+summary(AOV1)
+TukeyHSD(AOV1)
+
+#response 7 = Inactive is significant, anova to analyze
+AOV1 = aov(intrx.co$Ab.d ~ intrx.co$LIFE)
+summary(AOV1)
+TukeyHSD(AOV1)
+
+#for both variables, slight differences between "mom" and other life history categories
