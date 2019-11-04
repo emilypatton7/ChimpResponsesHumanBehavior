@@ -5,6 +5,7 @@
 #load and process data
 intrx.mc = read.table(file = "intrx-mc.csv", header = T, sep = ",")
 str(intrx.mc)
+names(intrx.mc)
 
 #total interaction seconds
 intrx.mc$total.intrx = intrx.mc$CAf + intrx.mc$HAf + intrx.mc$NAS + intrx.mc$Other + intrx.mc$Ab + intrx.mc$Tr + intrx.mc$In
@@ -82,3 +83,7 @@ t.test(co.comc$Tr.d ~ co.comc$Condition,  alternative = c("two.sided"), paired=F
 #chimpanzees travelled more in the carry over matched control after chimpanzee interaction
 
 
+
+#try a different way to analyze
+t.test(intrx.mc$HAf.p, intrx.mc$HAfMC.p, paired=T)
+#paired t-test of interaction v matched control for each behavior, p = 0.007
