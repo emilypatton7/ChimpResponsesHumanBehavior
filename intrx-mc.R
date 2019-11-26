@@ -40,6 +40,15 @@ intrx.mc$Ab.d = intrx.mc$Ab.p - intrx.mc$AbMC.p
 intrx.mc$Tr.d = intrx.mc$Tr.p - intrx.mc$TrMC.p
 intrx.mc$In.d = intrx.mc$In.p - intrx.mc$InMC.p
 
+#normalize difference of interaction and matched control (convert back to raw duration)
+intrx.mc$Caf.d = intrx.mc$Caf.d * 600
+intrx.mc$Haf.d = intrx.mc$Haf.d * 600
+intrx.mc$NAS.d = intrx.mc$NAS.d * 600
+intrx.mc$Other.d = intrx.mc$Other.d * 600
+intrx.mc$Ab.d = intrx.mc$Ab.d * 600
+intrx.mc$Tr.d = intrx.mc$Tr.d * 600
+intrx.mc$In.d = intrx.mc$In.d * 600
+
 #graphs
 hist(intrx.mc$Caf.d)
 hist(intrx.mc$Haf.d)
@@ -51,8 +60,10 @@ hist(intrx.mc$Tr.d)
 
 
 
-#condense dependent variables
+#condense dependent variables as proportional differences 
 y <- cbind(intrx.mc$Caf.d, intrx.mc$Haf.d, intrx.mc$Nas.d, intrx.mc$Other.d, intrx.mc$Ab.d, intrx.mc$Tr.d, intrx.mc$In.d)#combines dependent variables
+
+
 
 #run manova
 manova(y ~ Condition * Life, data=intrx.mc, na.action=na.omit)
@@ -94,6 +105,19 @@ t.test(intrx.mc$Ab.p, intrx.mc$AbMC.p, paired=T) #p = .1612
 t.test(intrx.mc$Tr.p, intrx.mc$TrMC.p, paired=T) #p = .4321
 t.test(intrx.mc$In.p, intrx.mc$InMC.p, paired=T) #p .000000002434
 
+#run MANOVA on raw numbers
+#calculate difference of interaction and matched control using raw numbers
+intrx.mc$Caf.d = intrx.mc$CAf - intrx.mc$CAfMC
+intrx.mc$Haf.d = intrx.mc$HAf - intrx.mc$HAfMC
+intrx.mc$NAS.d = intrx.mc$NAS - intrx.mc$NASMC
+intrx.mc$Other.d = intrx.mc$Other - intrx.mc$OtherMC
+intrx.mc$Ab.d = intrx.mc$Ab - intrx.mc$AbMC
+intrx.mc$Tr.d = intrx.mc$Tr - intrx.mc$TrMC
+intrx.mc$In.d = intrx.mc$In - intrx.mc$InMC
 
-
-
+#condense dependent variables as raw differences
+y <- cbind(intrx.mc$Caf.d, intrx.mc$Haf.d, intrx.mc$NAS.d, intrx.mc$Other.d, intrx.mc$Ab.d, intrx.mc$Tr.d, intrx.mc$In.d)#combines dependent variables
+manova(y ~ Condition + Life, data=intrx.mc, na.action=na.omit)
+M1 <- manova(y ~ Condition + Life, data=intrx.mc, na.action=na.omit)
+summary(M1, tol=0)#tol=0 overrides error code, overall test summary
+summary.aov(M1)
