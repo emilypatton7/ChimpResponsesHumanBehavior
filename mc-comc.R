@@ -81,7 +81,13 @@ t.test(co.comc$Tr.d ~ co.comc$Condition,  alternative = c("two.sided"), paired=F
 #chimpanzees travelled more in the carry over matched control after chimpanzee interaction
 
 
-
+t.test(mc.comc$HAfMC.p, mc.comc$HafCOMC, paired=T) #p = .01726
+t.test(mc.comc$CAfMC.p, mc.comc$CafCOMC.p, paired=T) #p = .0797
+t.test(mc.comc$NASMC.p, mc.comc$NASCOMC.p, paired=T) #p = .5837
+t.test(mc.comc$OtherMC.p, mc.comc$OtherCOMC.p, paired=T) #p = .4945
+t.test(mc.comc$AbMC.p, mc.comc$AbCOMC.p, paired=T) #p = .901
+t.test(mc.comc$TrMC.p, mc.comc$TrCOMC.p, paired=T) #p = .009589
+t.test(mc.comc$InMC.p, mc.comc$InCOMC.p, paired=T) #p = .02706
 
 
 

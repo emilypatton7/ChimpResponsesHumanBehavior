@@ -7,10 +7,10 @@ intrx.co = read.table(file = "intrx-CO.csv", header = T, sep = ",")
 str(intrx.co)
 
 #total interaction seconds
-intrx.co$total.intrx = intrx.co$CAF + intrx.co$HAF + intrx.co$NAS + intrx.co$Other + intrx.co$Ab + intrx.co$Tr + intrx.co$In
+intrx.co$total.intrx = intrx.co$CAF + intrx.co$HAF + intrx.co$NAS + intrx.co$Other + intrx.co$Ab + intrx.co$Tr + intrx.co$In + intrx.co$BO
 
 #total carry over seconds
-intrx.co$total.co = intrx.co$CAFCO + intrx.co$HAFCO + intrx.co$NASCO + intrx.co$OtherCO + intrx.co$AbCO + intrx.co$TrCO + intrx.co$InCO
+intrx.co$total.co = intrx.co$CAFCO + intrx.co$HAFCO + intrx.co$NASCO + intrx.co$OtherCO + intrx.co$AbCO + intrx.co$TrCO + intrx.co$InCO + intrx.co$BOCO
 
 #calculate proportions intrx
 intrx.co$CAF.p = intrx.co$CAF/intrx.co$total.intrx
@@ -59,6 +59,8 @@ M1 <- manova(y ~ Condition * LIFE, data=intrx.co, na.action=na.omit)
 summary(M1, tol=0)#tol=0 overrides error code, overall test summary
 summary.aov(M1)
 
+#RE-RAN UP TO HERE
+
 #interaction is not significant, so it can be removed
 manova(y ~ Condition + LIFE, data=intrx.co, na.action=na.omit)
 M1 <- manova(y ~ Condition + LIFE, data=intrx.co, na.action=na.omit)
@@ -88,3 +90,15 @@ summary(AOV1)
 TukeyHSD(AOV1)
 
 #for both variables, slight differences between "mom" and other life history categories
+
+#try a different way to analyze
+t.test(intrx.co$HAF.p, intrx.co$HAFCO.p, paired=T) #p = .000000000000005451
+#paired t-test of interaction v matched control for each behavior, p = 0.007
+t.test(intrx.co$CAF.p, intrx.co$CAFCO.p, paired=T)
+t.test(intrx.co$NAS.p, intrx.co$NASCO.p, paired=T)
+t.test(intrx.co$Other.p, intrx.co$OtherCO.p, paired=T) #p .00005129
+t.test(intrx.co$Ab.p, intrx.co$AbCO.p, paired=T)
+t.test(intrx.co$Tr.p, intrx.co$TrCO.p, paired=T)
+t.test(intrx.co$In.p, intrx.co$InCO.p, paired=T) # p .00001018
+
+

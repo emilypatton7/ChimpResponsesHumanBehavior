@@ -8,10 +8,10 @@ str(intrx.mc)
 names(intrx.mc)
 
 #total interaction seconds
-intrx.mc$total.intrx = intrx.mc$CAf + intrx.mc$HAf + intrx.mc$NAS + intrx.mc$Other + intrx.mc$Ab + intrx.mc$Tr + intrx.mc$In
+intrx.mc$total.intrx = intrx.mc$CAf + intrx.mc$HAf + intrx.mc$NAS + intrx.mc$Other + intrx.mc$Ab + intrx.mc$Tr + intrx.mc$In + intrx.mc$BO
 
 #total matched control seconds
-intrx.mc$total.mc = intrx.mc$CAfMC + intrx.mc$HAfMC + intrx.mc$NASMC + intrx.mc$OtherMC + intrx.mc$AbMC + intrx.mc$TrMC + intrx.mc$InMC
+intrx.mc$total.mc = intrx.mc$CAfMC + intrx.mc$HAfMC + intrx.mc$NASMC + intrx.mc$OtherMC + intrx.mc$AbMC + intrx.mc$TrMC + intrx.mc$InMC + intrx.mc$BOMC
 
 #calculate proportions interaction
 intrx.mc$CAf.p = intrx.mc$CAf/intrx.mc$total.intrx
@@ -85,5 +85,15 @@ t.test(co.comc$Tr.d ~ co.comc$Condition,  alternative = c("two.sided"), paired=F
 
 
 #try a different way to analyze
-t.test(intrx.mc$HAf.p, intrx.mc$HAfMC.p, paired=T)
+t.test(intrx.mc$HAf.p, intrx.mc$HAfMC.p, paired=T) #p .000000000000007164
 #paired t-test of interaction v matched control for each behavior, p = 0.007
+t.test(intrx.mc$CAf.p, intrx.mc$CAfMC.p, paired=T) #p = .2738
+t.test(intrx.mc$NAS.p, intrx.mc$NASMC.p, paired=T) #p = .02282
+t.test(intrx.mc$Other.p, intrx.mc$OtherMC.p, paired=T) #p = .01311
+t.test(intrx.mc$Ab.p, intrx.mc$AbMC.p, paired=T) #p = .1612
+t.test(intrx.mc$Tr.p, intrx.mc$TrMC.p, paired=T) #p = .4321
+t.test(intrx.mc$In.p, intrx.mc$InMC.p, paired=T) #p .000000002434
+
+
+
+
