@@ -50,12 +50,30 @@ hist(co.comc$Tr.d)
 hist(co.comc$In.d)
 
 
+#repeated measures approach with MANOVA
 #condense dependent variables
 y <- cbind(co.comc$Caf.d, co.comc$Haf.d, co.comc$Nas.d, co.comc$Other.d, co.comc$Ab.d, co.comc$Tr.d, co.comc$In.d)#combines dependent variables
 
+
 #run manova
-manova(y ~ Condition * Life, data=co.comc, na.action=na.omit)
-M1 <- manova(y ~ Condition * Life, data=co.comc, na.action=na.omit)
+manova(y ~ Condition * Life + Chimp, data=co.comc, na.action=na.omit)
+M1 <- manova(y ~ Condition * Life + Chimp, data=co.comc, na.action=na.omit)
+summary(M1, tol=0)#tol=0 overrides error code, overall test summary
+summary.aov(M1)
+
+
+
+
+##########
+#things below here we tried and they are not the best approach
+##########
+#condense dependent variables
+y <- cbind(co.comc$Caf.d, co.comc$Haf.d, co.comc$Nas.d, co.comc$Other.d, co.comc$Ab.d, co.comc$Tr.d, co.comc$In.d)#combines dependent variables
+
+
+#run manova
+manova(y ~ Condition * Life + Chimp, data=co.comc, na.action=na.omit)
+M1 <- manova(y ~ Condition * Life + Chimp, data=co.comc, na.action=na.omit)
 summary(M1, tol=0)#tol=0 overrides error code, overall test summary
 summary.aov(M1)
 

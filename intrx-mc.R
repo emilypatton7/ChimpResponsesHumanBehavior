@@ -2,6 +2,12 @@
 #EAP
 #Interaction and matched control analysis
 
+#install and load packages
+install.packages("ggplot2")
+install.package("dplyr")
+library(ggplot2)
+library(dplyr)
+
 #load and process data
 intrx.mc = read.table(file = "intrx-mc.csv", header = T, sep = ",")
 str(intrx.mc)
@@ -58,30 +64,36 @@ hist(intrx.mc$In.d)
 hist(intrx.mc$Ab.d)
 hist(intrx.mc$Tr.d)
 
-
-
 #condense dependent variables as proportional differences 
 y <- cbind(intrx.mc$Caf.d, intrx.mc$Haf.d, intrx.mc$Nas.d, intrx.mc$Other.d, intrx.mc$Ab.d, intrx.mc$Tr.d, intrx.mc$In.d)#combines dependent variables
 
 
 
 #run manova
-manova(y ~ Condition * Life, data=intrx.mc, na.action=na.omit)
-M1 <- manova(y ~ Condition * Life, data=intrx.mc, na.action=na.omit)
+manova(y ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+M1 <- manova(y ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
 summary(M1, tol=0)#tol=0 overrides error code, overall test summary
 summary.aov(M1)
 
-#interaction is not significant, so it can be removed
-manova(y ~ Condition + Life, data=intrx.mc, na.action=na.omit)
-M1 <- manova(y ~ Condition + Life, data=intrx.mc, na.action=na.omit)
-summary(M1, tol=0)#tol=0 overrides error code, overall test summary
-summary.aov(M1)
+#make graphics
+x <- group_by(intrx.mc, Condition) %>%  # Grouping function causes subsequent functions to aggregate intrx.mc by Condition
+  summarize(cond.mean = mean(Haf.d, na.rm = TRUE), # na.rm = TRUE to remove missing values
+            cond.sd=sd(Haf.d, na.rm = TRUE),  # na.rm = TRUE to remove missing values
+            n = sum(!is.na(Haf.d)), # of observations, excluding NAs. 
+            cond.se=cond.sd/sqrt(n))
 
-#can remove life history since it is not significant
-manova(y ~ Condition, data=co.comc, na.action=na.omit)
-M1 <- manova(y ~ Condition, data=co.comc, na.action=na.omit)
-summary(M1, tol=0)#tol=0 overrides error code, overall test summary
-summary.aov(M1)
+ggplot(data=x, aes(x=Condition, y=cond.mean)) + #data is what you plot
+  geom_bar(stat="identity", position=position_dodge(), color = "black") + 
+  geom_errorbar(aes(ymin=cond.mean, ymax=cond.mean+cond.se), width=0.2, 
+                position=position_dodge(0.9)) + 
+  xlab("Interaction Type") +
+  ylab(expression(Time~Difference~(Interaction-Matched~Control))) +
+  theme_bw() +
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        axis.title.y=element_text(size=8),
+        axis.title.x=element_text(size=8),
+        axis.text.x=element_text(size=8))
 
 #use graphics to analyze residuals
 plot(residuals(M1))
@@ -89,13 +101,7 @@ qqnorm(residuals(M1))#this looks bad
 qqline(residuals(M1))
 hist(residuals(M1))#but this looks really good
 
-#response 6 = Travel is significant, paired t-test to analyze
-t.test(co.comc$Tr.d ~ co.comc$Condition,  alternative = c("two.sided"), paired=F)
-#chimpanzees travelled more in the carry over matched control after chimpanzee interaction
-
-
-
-#try a different way to analyze
+#run paired t-tests to find difference between interaction and matched control
 t.test(intrx.mc$HAf.p, intrx.mc$HAfMC.p, paired=T) #p .000000000000007164
 #paired t-test of interaction v matched control for each behavior, p = 0.007
 t.test(intrx.mc$CAf.p, intrx.mc$CAfMC.p, paired=T) #p = .2738
@@ -105,19 +111,5 @@ t.test(intrx.mc$Ab.p, intrx.mc$AbMC.p, paired=T) #p = .1612
 t.test(intrx.mc$Tr.p, intrx.mc$TrMC.p, paired=T) #p = .4321
 t.test(intrx.mc$In.p, intrx.mc$InMC.p, paired=T) #p .000000002434
 
-#run MANOVA on raw numbers
-#calculate difference of interaction and matched control using raw numbers
-intrx.mc$Caf.d = intrx.mc$CAf - intrx.mc$CAfMC
-intrx.mc$Haf.d = intrx.mc$HAf - intrx.mc$HAfMC
-intrx.mc$NAS.d = intrx.mc$NAS - intrx.mc$NASMC
-intrx.mc$Other.d = intrx.mc$Other - intrx.mc$OtherMC
-intrx.mc$Ab.d = intrx.mc$Ab - intrx.mc$AbMC
-intrx.mc$Tr.d = intrx.mc$Tr - intrx.mc$TrMC
-intrx.mc$In.d = intrx.mc$In - intrx.mc$InMC
-
-#condense dependent variables as raw differences
-y <- cbind(intrx.mc$Caf.d, intrx.mc$Haf.d, intrx.mc$NAS.d, intrx.mc$Other.d, intrx.mc$Ab.d, intrx.mc$Tr.d, intrx.mc$In.d)#combines dependent variables
-manova(y ~ Condition + Life, data=intrx.mc, na.action=na.omit)
-M1 <- manova(y ~ Condition + Life, data=intrx.mc, na.action=na.omit)
-summary(M1, tol=0)#tol=0 overrides error code, overall test summary
-summary.aov(M1)
+#test of differences in behavior within the interaction session
+xx = aov(HAf ~ Condition*Life+Chimp, data=intrx.mc, na.action=na.omit)
