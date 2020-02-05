@@ -65,8 +65,7 @@ hist(intrx.mc$Ab.d)
 hist(intrx.mc$Tr.d)
 
 #condense dependent variables as proportional differences 
-y <- cbind(intrx.mc$Caf.d, intrx.mc$Haf.d, intrx.mc$Nas.d, intrx.mc$Other.d, intrx.mc$Ab.d, intrx.mc$Tr.d, intrx.mc$In.d)#combines dependent variables
-
+y <- cbind(intrx.mc$Caf.d, intrx.mc$Haf.d, intrx.mc$NAS.d, intrx.mc$Other.d, intrx.mc$Ab.d, intrx.mc$Tr.d, intrx.mc$In.d)#combines dependent variables
 
 
 #run manova
@@ -112,4 +111,31 @@ t.test(intrx.mc$Tr.p, intrx.mc$TrMC.p, paired=T) #p = .4321
 t.test(intrx.mc$In.p, intrx.mc$InMC.p, paired=T) #p .000000002434
 
 #test of differences in behavior within the interaction session
-xx = aov(HAf ~ Condition*Life+Chimp, data=intrx.mc, na.action=na.omit)
+aov(HAf ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+A1 <- aov(HAf ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+summary(A1, tol=0)#tol=0 overrides error code, overall test summary
+summary.aov(A1)
+
+aov(CAf ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+A2 <- aov(CAf ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+summary(A2,tol=0)
+
+aov(NAS ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+A3 <- aov(NAS ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+summary(A3,tol=0)
+
+aov(NAS ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+A3 <- aov(NAS ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+summary(A3,tol=0)
+
+aov(Ab ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+A4 <- aov(Ab ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+summary(A4,tol=0)
+
+aov(Tr ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+A5 <- aov(Tr ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+summary(A5,tol=0)
+
+aov(In ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+A6 <- aov(In ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
+summary(A6,tol=0)
