@@ -33,7 +33,7 @@ mc.comc$InCOMC.p = mc.comc$InCOMC/mc.comc$total.comc
 #calculate difference of matched control and carry over matched control
 mc.comc$Caf.d = mc.comc$CAfMC.p - mc.comc$CafCOMC.p
 mc.comc$Haf.d = mc.comc$HAfMC.p - mc.comc$HafCOMC.p
-mc.comc$NASMC.d = mc.comc$NASMC.p - mc.comc$NASCOMC.p
+mc.comc$NAS.d = mc.comc$NASMC.p - mc.comc$NASCOMC.p
 mc.comc$Other.d = mc.comc$OtherMC.p - mc.comc$OtherCOMC.p
 mc.comc$Ab.d = mc.comc$AbMC.p - mc.comc$AbCOMC.p
 mc.comc$Tr.d = mc.comc$TrMC.p - mc.comc$TrCOMC.p
@@ -50,11 +50,11 @@ hist(mc.comc$In.d)
 
 
 #condense dependent variables
-y <- cbind(mc.comc$Caf.d, mc.comc$Haf.d, mc.comc$Nas.d, mc.comc$Other.d, mc.comc$Ab.d, mc.comc$Tr.d, mc.comc$In.d)#combines dependent variables
+y <- cbind(mc.comc$Caf.d, mc.comc$Haf.d, mc.comc$NAS.d, mc.comc$Other.d, mc.comc$Ab.d, mc.comc$Tr.d, mc.comc$In.d)#combines dependent variables
 
 #run manova
-manova(y ~ Condition * Life, data=mc.comc, na.action=na.omit)
-M1 <- manova(y ~ Condition * Life, data=mc.comc, na.action=na.omit)
+manova(y ~ Condition * Life + Chimp, data=mc.comc, na.action=na.omit)
+M1 <- manova(y ~ Condition * Life + Chimp, data=mc.comc, na.action=na.omit)
 summary(M1, tol=0)#tol=0 overrides error code, overall test summary
 summary.aov(M1)
 
@@ -89,5 +89,24 @@ t.test(mc.comc$AbMC.p, mc.comc$AbCOMC.p, paired=T) #p = .901
 t.test(mc.comc$TrMC.p, mc.comc$TrCOMC.p, paired=T) #p = .009589
 t.test(mc.comc$InMC.p, mc.comc$InCOMC.p, paired=T) #p = .02706
 
+#make graphics
+x <- group_by(mc.comc, Condition) %>%  # Grouping function causes subsequent functions to aggregate intrx.mc by Condition
+  summarize(cond.mean = mean(In.d, na.rm = TRUE), # na.rm = TRUE to remove missing values
+            cond.sd=sd(In.d, na.rm = TRUE),  # na.rm = TRUE to remove missing values
+            n = sum(!is.na(In.d)), # of observations, excluding NAs. 
+            cond.se=cond.sd/sqrt(n))
+
+ggplot(data=x, aes(x=Condition, y=cond.mean)) + #data is what you plot
+  geom_bar(stat="identity", position=position_dodge(), color = "black") + 
+  geom_errorbar(aes(ymin=cond.mean, ymax=cond.mean+cond.se), width=0.2, 
+                position=position_dodge(0.9)) + 
+  xlab("Interaction Type") +
+  ylab(expression(Time~Difference~(Matched~Control-Carry~Over~Matched~Control))) +
+  theme_bw() +
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        axis.title.y=element_text(size=8),
+        axis.title.x=element_text(size=8),
+        axis.text.x=element_text(size=8))
 
 

@@ -61,7 +61,25 @@ M1 <- manova(y ~ Condition * Life + Chimp, data=co.comc, na.action=na.omit)
 summary(M1, tol=0)#tol=0 overrides error code, overall test summary
 summary.aov(M1)
 
+#make graphics
+x <- group_by(co.comc, Condition) %>%  # Grouping function causes subsequent functions to aggregate intrx.mc by Condition
+  summarize(cond.mean = mean(In.d, na.rm = TRUE), # na.rm = TRUE to remove missing values
+            cond.sd=sd(In.d, na.rm = TRUE),  # na.rm = TRUE to remove missing values
+            n = sum(!is.na(In.d)), # of observations, excluding NAs. 
+            cond.se=cond.sd/sqrt(n))
 
+ggplot(data=x, aes(x=Condition, y=cond.mean)) + #data is what you plot
+  geom_bar(stat="identity", position=position_dodge(), color = "black") + 
+  geom_errorbar(aes(ymin=cond.mean, ymax=cond.mean+cond.se), width=0.2, 
+                position=position_dodge(0.9)) + 
+  xlab("Interaction Type") +
+  ylab(expression(Time~Difference~(Carry~Over-Carry~Over~Matched~Control))) +
+  theme_bw() +
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        axis.title.y=element_text(size=8),
+        axis.title.x=element_text(size=8),
+        axis.text.x=element_text(size=8))
 
 
 ##########
@@ -102,12 +120,12 @@ t.test(co.comc$Tr.d ~ co.comc$Condition,  alternative = c("two.sided"), paired=F
 #chimpanzees travelled more in the carry over matched control after chimpanzee interaction
 
 #try a different way to analyze, paired t-test of interaction v matched control for each behavior, p = 0.007
-t.test(co.comc$HAfCO.p, co.comc$HAfCOMC.p, paired=T) #p = .09045
-t.test(co.comc$CAfCO.p, co.comc$CAfCOMC.p, paired=T) #p = .7843
-t.test(co.comc$NASCO.p, co.comc$NASCOMC.p, paired=T) #p = .9998
-t.test(co.comc$OtherCO.p, co.comc$OtherCOMC.p, paired=T) #p = .2464
-t.test(co.comc$AbCO.p, co.comc$AbCOMC.p, paired=T) #p = .7702
-t.test(co.comc$TrCO.p, co.comc$TrCOMC.p, paired=T) #p = .012065
-t.test(co.comc$InCO.p, co.comc$InCOMC.p, paired=T) #p = .7146
+t.test(co.comc$HAfCO.p, co.comc$HAfCOMC.p, paired=T) #p = .09107
+t.test(co.comc$CAfCO.p, co.comc$CAfCOMC.p, paired=T) #p = .7665
+t.test(co.comc$NASCO.p, co.comc$NASCOMC.p, paired=T) #p = .9914
+t.test(co.comc$OtherCO.p, co.comc$OtherCOMC.p, paired=T) #p = .3034
+t.test(co.comc$AbCO.p, co.comc$AbCOMC.p, paired=T) #p = .7718
+t.test(co.comc$TrCO.p, co.comc$TrCOMC.p, paired=T) #p = .01156
+t.test(co.comc$InCO.p, co.comc$InCOMC.p, paired=T) #p = .688
 
 

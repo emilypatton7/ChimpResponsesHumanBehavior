@@ -76,9 +76,9 @@ summary.aov(M1)
 
 #make graphics
 x <- group_by(intrx.mc, Condition) %>%  # Grouping function causes subsequent functions to aggregate intrx.mc by Condition
-  summarize(cond.mean = mean(Haf.d, na.rm = TRUE), # na.rm = TRUE to remove missing values
-            cond.sd=sd(Haf.d, na.rm = TRUE),  # na.rm = TRUE to remove missing values
-            n = sum(!is.na(Haf.d)), # of observations, excluding NAs. 
+  summarize(cond.mean = mean(In.d, na.rm = TRUE), # na.rm = TRUE to remove missing values
+            cond.sd=sd(In.d, na.rm = TRUE),  # na.rm = TRUE to remove missing values
+            n = sum(!is.na(In.d)), # of observations, excluding NAs. 
             cond.se=cond.sd/sqrt(n))
 
 ggplot(data=x, aes(x=Condition, y=cond.mean)) + #data is what you plot
@@ -101,14 +101,14 @@ qqline(residuals(M1))
 hist(residuals(M1))#but this looks really good
 
 #run paired t-tests to find difference between interaction and matched control
-t.test(intrx.mc$HAf.p, intrx.mc$HAfMC.p, paired=T) #p .000000000000007164
+t.test(intrx.mc$HAf.p, intrx.mc$HAfMC.p, paired=T) #p = 7.299e-15
 #paired t-test of interaction v matched control for each behavior, p = 0.007
-t.test(intrx.mc$CAf.p, intrx.mc$CAfMC.p, paired=T) #p = .2738
-t.test(intrx.mc$NAS.p, intrx.mc$NASMC.p, paired=T) #p = .02282
-t.test(intrx.mc$Other.p, intrx.mc$OtherMC.p, paired=T) #p = .01311
-t.test(intrx.mc$Ab.p, intrx.mc$AbMC.p, paired=T) #p = .1612
-t.test(intrx.mc$Tr.p, intrx.mc$TrMC.p, paired=T) #p = .4321
-t.test(intrx.mc$In.p, intrx.mc$InMC.p, paired=T) #p .000000002434
+t.test(intrx.mc$CAf.p, intrx.mc$CAfMC.p, paired=T) #p = .2351
+t.test(intrx.mc$NAS.p, intrx.mc$NASMC.p, paired=T) #p = .02203
+t.test(intrx.mc$Other.p, intrx.mc$OtherMC.p, paired=T) #p = .01397
+t.test(intrx.mc$Ab.p, intrx.mc$AbMC.p, paired=T) #p = .1654
+t.test(intrx.mc$Tr.p, intrx.mc$TrMC.p, paired=T) #p = .3631
+t.test(intrx.mc$In.p, intrx.mc$InMC.p, paired=T) #p = .4.487e-09
 
 #test of differences in behavior within the interaction session
 aov(HAf ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)

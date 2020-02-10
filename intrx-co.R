@@ -54,22 +54,21 @@ hist(intrx.co$Ab.d)
 y <- cbind(intrx.co$Caf.d, intrx.co$Haf.d, intrx.co$Nas.d, intrx.co$Other.d, intrx.co$Ab.d, intrx.co$Tr.d, intrx.co$In.d)#combines dependent variables
 
 #run manova
-manova(y ~ Condition * LIFE, data=intrx.co, na.action=na.omit)
-M1 <- manova(y ~ Condition * LIFE, data=intrx.co, na.action=na.omit)
+manova(y ~ Condition * LIFE + Chimp, data=intrx.co, na.action=na.omit)
+M1 <- manova(y ~ Condition * LIFE + Chimp, data=intrx.co, na.action=na.omit)
 summary(M1, tol=0)#tol=0 overrides error code, overall test summary
 summary.aov(M1)
 
-#RE-RAN UP TO HERE
 
 #interaction is not significant, so it can be removed
-manova(y ~ Condition + LIFE, data=intrx.co, na.action=na.omit)
-M1 <- manova(y ~ Condition + LIFE, data=intrx.co, na.action=na.omit)
+manova(y ~ Condition + LIFE + Chimp, data=intrx.co, na.action=na.omit)
+M1 <- manova(y ~ Condition + LIFE + Chimp, data=intrx.co, na.action=na.omit)
 summary(M1, tol=0)#tol=0 overrides error code, overall test summary
 summary.aov(M1)
 
 #can remove condition since it is not significant
-manova(y ~ LIFE, data=intrx.co, na.action=na.omit)
-M1 <- manova(y ~ LIFE, data=intrx.co, na.action=na.omit)
+manova(y ~ LIFE + Chimp, data=intrx.co, na.action=na.omit)
+M1 <- manova(y ~ LIFE + Chimp, data=intrx.co, na.action=na.omit)
 summary(M1, tol=0)#tol=0 overrides error code, overall test summary
 summary.aov(M1)
 
@@ -78,6 +77,26 @@ plot(residuals(M1))
 qqnorm(residuals(M1))#this looks bad
 qqline(residuals(M1))
 hist(residuals(M1))#but this looks really good
+
+#make graphics
+x <- group_by(intrx.co, Condition) %>%  # Grouping function causes subsequent functions to aggregate intrx.mc by Condition
+  summarize(cond.mean = mean(In.d, na.rm = TRUE), # na.rm = TRUE to remove missing values
+            cond.sd=sd(In.d, na.rm = TRUE),  # na.rm = TRUE to remove missing values
+            n = sum(!is.na(In.d)), # of observations, excluding NAs. 
+            cond.se=cond.sd/sqrt(n))
+
+ggplot(data=x, aes(x=Condition, y=cond.mean)) + #data is what you plot
+  geom_bar(stat="identity", position=position_dodge(), color = "black") + 
+  geom_errorbar(aes(ymin=cond.mean, ymax=cond.mean+cond.se), width=0.2, 
+                position=position_dodge(0.9)) + 
+  xlab("Interaction Type") +
+  ylab(expression(Time~Difference~(Interaction-Carry~Over))) +
+  theme_bw() +
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        axis.title.y=element_text(size=8),
+        axis.title.x=element_text(size=8),
+        axis.text.x=element_text(size=8))
 
 #response 5 = Abnormal is significant, anova to analyze
 AOV1 = aov(intrx.co$Ab.d ~ intrx.co$LIFE)
@@ -92,13 +111,12 @@ TukeyHSD(AOV1)
 #for both variables, slight differences between "mom" and other life history categories
 
 #try a different way to analyze
-t.test(intrx.co$HAF.p, intrx.co$HAFCO.p, paired=T) #p = .000000000000005451
-#paired t-test of interaction v matched control for each behavior, p = 0.007
-t.test(intrx.co$CAF.p, intrx.co$CAFCO.p, paired=T)
-t.test(intrx.co$NAS.p, intrx.co$NASCO.p, paired=T)
-t.test(intrx.co$Other.p, intrx.co$OtherCO.p, paired=T) #p .00005129
-t.test(intrx.co$Ab.p, intrx.co$AbCO.p, paired=T)
-t.test(intrx.co$Tr.p, intrx.co$TrCO.p, paired=T)
-t.test(intrx.co$In.p, intrx.co$InCO.p, paired=T) # p .00001018
+t.test(intrx.co$HAF.p, intrx.co$HAFCO.p, paired=T) #p = 5.78e-15
+t.test(intrx.co$CAF.p, intrx.co$CAFCO.p, paired=T) #p = .2749
+t.test(intrx.co$NAS.p, intrx.co$NASCO.p, paired=T) #p = .01127
+t.test(intrx.co$Other.p, intrx.co$OtherCO.p, paired=T) #p = 6.963e-05
+t.test(intrx.co$Ab.p, intrx.co$AbCO.p, paired=T) #p = .2066
+t.test(intrx.co$Tr.p, intrx.co$TrCO.p, paired=T) #p = .6283
+t.test(intrx.co$In.p, intrx.co$InCO.p, paired=T) #p = 1.662e-05
 
 
