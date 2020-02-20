@@ -7,10 +7,10 @@ intrx.co = read.table(file = "intrx-CO.csv", header = T, sep = ",")
 str(intrx.co)
 
 #total interaction seconds
-intrx.co$total.intrx = intrx.co$CAF + intrx.co$HAF + intrx.co$NAS + intrx.co$Other + intrx.co$Ab + intrx.co$Tr + intrx.co$In + intrx.co$BO
+intrx.co$total.intrx = intrx.co$CAF + intrx.co$HAF + intrx.co$NAS + intrx.co$Other + intrx.co$Ab + intrx.co$Tr + intrx.co$In
 
 #total carry over seconds
-intrx.co$total.co = intrx.co$CAFCO + intrx.co$HAFCO + intrx.co$NASCO + intrx.co$OtherCO + intrx.co$AbCO + intrx.co$TrCO + intrx.co$InCO + intrx.co$BOCO
+intrx.co$total.co = intrx.co$CAFCO + intrx.co$HAFCO + intrx.co$NASCO + intrx.co$OtherCO + intrx.co$AbCO + intrx.co$TrCO + intrx.co$InCO
 
 #calculate proportions intrx
 intrx.co$CAF.p = intrx.co$CAF/intrx.co$total.intrx
@@ -60,18 +60,6 @@ summary(M1, tol=0)#tol=0 overrides error code, overall test summary
 summary.aov(M1)
 
 
-#interaction is not significant, so it can be removed
-manova(y ~ Condition + LIFE + Chimp, data=intrx.co, na.action=na.omit)
-M1 <- manova(y ~ Condition + LIFE + Chimp, data=intrx.co, na.action=na.omit)
-summary(M1, tol=0)#tol=0 overrides error code, overall test summary
-summary.aov(M1)
-
-#can remove condition since it is not significant
-manova(y ~ LIFE + Chimp, data=intrx.co, na.action=na.omit)
-M1 <- manova(y ~ LIFE + Chimp, data=intrx.co, na.action=na.omit)
-summary(M1, tol=0)#tol=0 overrides error code, overall test summary
-summary.aov(M1)
-
 #use graphics to analyze residuals
 plot(residuals(M1))
 qqnorm(residuals(M1))#this looks bad
@@ -98,13 +86,13 @@ ggplot(data=x, aes(x=Condition, y=cond.mean)) + #data is what you plot
         axis.title.x=element_text(size=8),
         axis.text.x=element_text(size=8))
 
-#response 5 = Abnormal is significant, anova to analyze
-AOV1 = aov(intrx.co$Ab.d ~ intrx.co$LIFE)
+#response 5 = Human Affinitive is significant, anova to analyze
+AOV1 = aov(intrx.co$Haf.d ~ intrx.co$LIFE)
 summary(AOV1)
 TukeyHSD(AOV1)
 
-#response 7 = Inactive is significant, anova to analyze
-AOV1 = aov(intrx.co$Ab.d ~ intrx.co$LIFE)
+#response 7 = Nonaffinitive Social is significant, anova to analyze
+AOV1 = aov(intrx.co$Nas.d ~ intrx.co$LIFE)
 summary(AOV1)
 TukeyHSD(AOV1)
 

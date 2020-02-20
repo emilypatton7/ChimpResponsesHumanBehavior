@@ -14,10 +14,10 @@ str(intrx.mc)
 names(intrx.mc)
 
 #total interaction seconds
-intrx.mc$total.intrx = intrx.mc$CAf + intrx.mc$HAf + intrx.mc$NAS + intrx.mc$Other + intrx.mc$Ab + intrx.mc$Tr + intrx.mc$In + intrx.mc$BO
+intrx.mc$total.intrx = intrx.mc$CAf + intrx.mc$HAf + intrx.mc$NAS + intrx.mc$Other + intrx.mc$Ab + intrx.mc$Tr + intrx.mc$In
 
 #total matched control seconds
-intrx.mc$total.mc = intrx.mc$CAfMC + intrx.mc$HAfMC + intrx.mc$NASMC + intrx.mc$OtherMC + intrx.mc$AbMC + intrx.mc$TrMC + intrx.mc$InMC + intrx.mc$BOMC
+intrx.mc$total.mc = intrx.mc$CAfMC + intrx.mc$HAfMC + intrx.mc$NASMC + intrx.mc$OtherMC + intrx.mc$AbMC + intrx.mc$TrMC + intrx.mc$InMC
 
 #calculate proportions interaction
 intrx.mc$CAf.p = intrx.mc$CAf/intrx.mc$total.intrx
@@ -46,14 +46,7 @@ intrx.mc$Ab.d = intrx.mc$Ab.p - intrx.mc$AbMC.p
 intrx.mc$Tr.d = intrx.mc$Tr.p - intrx.mc$TrMC.p
 intrx.mc$In.d = intrx.mc$In.p - intrx.mc$InMC.p
 
-#normalize difference of interaction and matched control (convert back to raw duration)
-intrx.mc$Caf.d = intrx.mc$Caf.d * 600
-intrx.mc$Haf.d = intrx.mc$Haf.d * 600
-intrx.mc$NAS.d = intrx.mc$NAS.d * 600
-intrx.mc$Other.d = intrx.mc$Other.d * 600
-intrx.mc$Ab.d = intrx.mc$Ab.d * 600
-intrx.mc$Tr.d = intrx.mc$Tr.d * 600
-intrx.mc$In.d = intrx.mc$In.d * 600
+
 
 #graphs
 hist(intrx.mc$Caf.d)

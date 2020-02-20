@@ -8,10 +8,10 @@ str(co.comc)#returns structure of table
 names(co.comc)
 
 #total carry over seconds
-co.comc$total.co = co.comc$CAfCO + co.comc$HAfCO + co.comc$NASCO + co.comc$OtherCO + co.comc$AbCO + co.comc$TrCO + co.comc$InCO + co.comc$BOCO
+co.comc$total.co = co.comc$CAfCO + co.comc$HAfCO + co.comc$NASCO + co.comc$OtherCO + co.comc$AbCO + co.comc$TrCO + co.comc$InCO
 
 #total carry over matched control seconds
-co.comc$total.comc = co.comc$CafCOMC + co.comc$HafCOMC + co.comc$NASCOMC + co.comc$OtherCOMC + co.comc$AbCOMC+ co.comc$TrCOMC + co.comc$InCOMC + co.comc$BOCOMC
+co.comc$total.comc = co.comc$CafCOMC + co.comc$HafCOMC + co.comc$NASCOMC + co.comc$OtherCOMC + co.comc$AbCOMC+ co.comc$TrCOMC + co.comc$InCOMC
 
 #calculate proportions CO
 co.comc$CAfCO.p = co.comc$CAfCO/co.comc$total.co
@@ -82,42 +82,6 @@ ggplot(data=x, aes(x=Condition, y=cond.mean)) + #data is what you plot
         axis.text.x=element_text(size=8))
 
 
-##########
-#things below here we tried and they are not the best approach
-##########
-#condense dependent variables
-y <- cbind(co.comc$Caf.d, co.comc$Haf.d, co.comc$Nas.d, co.comc$Other.d, co.comc$Ab.d, co.comc$Tr.d, co.comc$In.d)#combines dependent variables
-
-
-#run manova
-manova(y ~ Condition * Life + Chimp, data=co.comc, na.action=na.omit)
-M1 <- manova(y ~ Condition * Life + Chimp, data=co.comc, na.action=na.omit)
-summary(M1, tol=0)#tol=0 overrides error code, overall test summary
-summary.aov(M1)
-
-#RE-RAN EVERYTHING UP TO HERE
-
-#interaction is not significant, so it can be removed
-manova(y ~ Condition + Life, data=co.comc, na.action=na.omit)
-M1 <- manova(y ~ Condition + Life, data=co.comc, na.action=na.omit)
-summary(M1, tol=0)#tol=0 overrides error code, overall test summary
-summary.aov(M1)
-
-#can remove life history since it is not significant
-manova(y ~ Condition, data=co.comc, na.action=na.omit)
-M1 <- manova(y ~ Condition, data=co.comc, na.action=na.omit)
-summary(M1, tol=0)#tol=0 overrides error code, overall test summary
-summary.aov(M1)
-
-#use graphics to analyze residuals
-plot(residuals(M1))
-qqnorm(residuals(M1))#this looks bad
-qqline(residuals(M1))
-hist(residuals(M1))#but this looks really good
-
-#response 6 = Travel is significant, paired t-test to analyze
-t.test(co.comc$Tr.d ~ co.comc$Condition,  alternative = c("two.sided"), paired=F)
-#chimpanzees travelled more in the carry over matched control after chimpanzee interaction
 
 #try a different way to analyze, paired t-test of interaction v matched control for each behavior, p = 0.007
 t.test(co.comc$HAfCO.p, co.comc$HAfCOMC.p, paired=T) #p = .09107
