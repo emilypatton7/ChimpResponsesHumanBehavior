@@ -2,6 +2,11 @@
 #EAP
 #Second Interaction and matched control analysis
 
+#install and load packages
+install.packages("ggplot2")
+install.package("dplyr")
+library(ggplot2)
+library(dplyr)
 
 #load and process data
 intrx.mc = read.table(file = "2intrx-mc.csv", header = T, sep = ",")
@@ -125,3 +130,44 @@ summary(A10,tol=0)
 aov(In ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
 A11 <- aov(In ~ Condition * Life + Chimp, data=intrx.mc, na.action=na.omit)
 summary(A11,tol=0)
+
+#make graphics
+#Summarize HSP by life history
+x <- group_by(intrx.mc, Life) %>%  # Grouping function causes subsequent functions to aggregate intrx.mc by Condition
+  summarize(life.mean = mean(HSP.d, na.rm = TRUE), # na.rm = TRUE to remove missing values
+            life.sd=sd(HSP.d, na.rm = TRUE),  # na.rm = TRUE to remove missing values
+            n = sum(!is.na(HSP.d)), # of observations, excluding NAs. 
+            life.se=life.sd/sqrt(n))
+
+ggplot(data=x, aes(x=Life, y=life.mean)) + #data is what you plot
+  geom_bar(stat="identity", position=position_dodge(), color = "black") + 
+  geom_errorbar(aes(ymin=life.mean, ymax=life.mean+life.se), width=0.2, 
+                position=position_dodge(0.9)) + 
+  xlab("Interaction Type") +
+  ylab(expression(Time~Difference~(Interaction-Matched~Control))) +
+  theme_bw() +
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        axis.title.y=element_text(size=8),
+        axis.title.x=element_text(size=8),
+        axis.text.x=element_text(size=8))
+
+#Summarize Other by Chimp
+x <- group_by(intrx.mc, Chimp) %>%  # Grouping function causes subsequent functions to aggregate intrx.mc by Condition
+  summarize(Chimp.mean = mean(Other.d, na.rm = TRUE), # na.rm = TRUE to remove missing values
+            Chimp.sd=sd(Other.d, na.rm = TRUE),  # na.rm = TRUE to remove missing values
+            n = sum(!is.na(Other.d)), # of observations, excluding NAs. 
+            Chimp.se=Chimp.sd/sqrt(n))
+
+ggplot(data=x, aes(x=Chimp, y=Chimp.mean)) + #data is what you plot
+  geom_bar(stat="identity", position=position_dodge(), color = "black") + 
+  geom_errorbar(aes(ymin=Chimp.mean, ymax=Chimp.mean+Chimp.se), width=0.2, 
+                position=position_dodge(0.9)) + 
+  xlab("Interaction Type") +
+  ylab(expression(Time~Difference~(Interaction-Matched~Control))) +
+  theme_bw() +
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        axis.title.y=element_text(size=8),
+        axis.title.x=element_text(size=8),
+        axis.text.x=element_text(size=8))
