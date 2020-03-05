@@ -89,7 +89,9 @@ ggplot(data=x, aes(x=Life, y=life.mean)) + #data is what you plot
         panel.grid.minor=element_blank(),
         axis.title.y=element_text(size=8),
         axis.title.x=element_text(size=8),
-        axis.text.x=element_text(size=8))
+        axis.text.x=element_text(size=8)) +
+  annotate("text", x=1, y=0.025, label="a", size=4) +
+  annotate("text", x=1.8, y=0.35, label="b", size=4) 
 
 #differences in groom based on condition
 x <- group_by(intrx.co, Condition) %>%  # Grouping function causes subsequent functions to aggregate intrx.mc by Condition
