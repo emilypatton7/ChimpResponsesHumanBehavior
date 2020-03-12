@@ -2,57 +2,10 @@
 #EAP
 #3-4-20
 
-#load and process data
-cb.hb = read.table(file = "3CB-HB.csv", header = T, sep = ",")
-str(cb.hb)
-names(cb.hb)
-
-
-#total cb seconds
-cb.hb$total.cb = cb.hb$SocialPlayCB + cb.hb$GroomCB + cb.hb$OtherAffCB + cb.hb$AggressionCB + cb.hb$NonIntCB + cb.hb$AbnormalCB + cb.hb$TravelCB + cb.hb$InactiveCB
-
-#total hb seconds
-cb.hb$total.hb = cb.hb$SocialPlayHB + cb.hb$GroomHB + cb.hb$OtherAffHB + cb.hb$AggressionHB + cb.hb$NonIntHB + cb.hb$AbnormalHB + cb.hb$TravelHB + cb.hb$InactiveHB
-
-#calculate proportions cb
-cb.hb$SocialPlayCB.p = cb.hb$SocialPlayCB/cb.hb$total.cb
-cb.hb$GroomCB.p = cb.hb$GroomCB/cb.hb$total.cb
-cb.hb$OtherAffCB.p = cb.hb$OtherAffCB/cb.hb$total.cb
-cb.hb$AggressionCB.p = cb.hb$AggressionCB/cb.hb$total.cb
-cb.hb$NonIntCB.p = cb.hb$NonIntCB/cb.hb$total.cb
-cb.hb$AbnormalCB.p = cb.hb$AbnormalCB/cb.hb$total.cb
-cb.hb$TravelCB.p = cb.hb$TravelCB/cb.hb$total.cb
-cb.hb$InactiveCB.p = cb.hb$InactiveCB/cb.hb$total.cb
-
-
-
-#calculate proportions hb
-cb.hb$SocialPlayHB.p = cb.hb$SocialPlayHB/cb.hb$total.hb
-cb.hb$GroomHB.p = cb.hb$GroomHB/cb.hb$total.hb
-cb.hb$OtherAffHB.p = cb.hb$OtherAffHB/cb.hb$total.hb
-cb.hb$AggressionHB.p = cb.hb$AggressionHB/cb.hb$total.hb
-cb.hb$NonIntHB.p = cb.hb$NonIntHB/cb.hb$total.hb
-cb.hb$AbnormalHB.p = cb.hb$AbnormalHB/cb.hb$total.hb
-cb.hb$TravelHB.p = cb.hb$TravelHB/cb.hb$total.hb
-cb.hb$InactiveHB.p = cb.hb$InactiveHB/cb.hb$total.hb
-
-
-#run paired t-tests to find difference between interaction and matched control
-#paired t-test of interaction v matched control for each behavior, p = 0.007
-t.test(cb.hb$SocialPlayCB.p, cb.hb$SocialPlayHB.p, paired=T) 
-t.test(cb.hb$GroomCB.p, cb.hb$GroomHB.p, paired=T) 
-t.test(cb.hb$OtherAffCB.p, cb.hb$OtherAffHB.p, paired=T) 
-t.test(cb.hb$AggressionCB.p, cb.hb$AggressionHB.p, paired=T)
-t.test(cb.hb$NonIntCB.p, cb.hb$NonIntHB.p, paired=T) 
-t.test(cb.hb$AbnormalCB.p, cb.hb$AbnormalHB.p, paired=T) 
-t.test(cb.hb$TravelCB.p, cb.hb$TravelHB.p, paired=T)
-t.test(cb.hb$InactiveCB.p, cb.hb$InactiveHB.p, paired=T)
-
-
 
 #test of differences in behavior within the interaction session
 #load and process data
-intrx = read.table(file = "3intrx-MC.csv", header = T, sep = ",")
+intrx = read.table(file = "intrx.csv", header = T, sep = ",")
 str(intrx)
 names(intrx)
 
@@ -192,3 +145,5 @@ ggplot(data=x, aes(x=Chimp, y=condition.mean)) + #data is what you plot
         axis.title.y=element_text(size=8),
         axis.title.x=element_text(size=8),
         axis.text.x=element_text(size=8))
+
+
